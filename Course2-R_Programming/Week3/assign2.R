@@ -1,40 +1,41 @@
-## Put comments here that give an overall description of what your
-## functions do
+#cache matrix inverse
 
-## Write a short comment describing this function
-
+#create special matrix object with inverse attribute
 makeCacheMatrix <- function(x = matrix()) {
-  inv_mat <- NULL
-  set <- function(matr)
-  {
-    x <<- matr
-    inv_mat = NULL
+  m <- NULL
+  set <- function(y) {
+    x <<- y
+    m <<- NULL
   }
   get <- function() x
-  setinv <- function(input) inv_mat <<- input
-  getinv <- function() inv_mat
-  list(set = set, get = get, setinv = setinv, getinv = getinv)
+  setinv <- function(inv) m <<- inv
+  getinv <- function() m
+  list(set = set, get = get,
+       setinv = setinv,
+       getinv = getinv)
 }
-
-
-## Write a short comment describing this function
 
 cacheSolve <- function(x, ...) {
-        ## Return a matrix that is the inverse of 'x'
-  inv_mat <- x$getinv
-  if(!is.null(inv_mat))
-  {
-    message("getting cached inverse matrix")
-    return(inv_mat)
+  m <- x$getinv()
+  if(!is.null(m)) {
+    message("getting cached data")
+    return(m)
   }
-  matr <- x$get()
-  inv_mat <- solve(matr)
-  x$setinv(inv_mat)
-  inv_mat
+  data <- x$get()
+  m <- solve(data)
+  x$setinv(m)
+  m
 }
 
-m = matrix(c(2,4,3,5,6,4,2,3,8), nrow = 3, ncol= 3)
-matobject = makeCacheMatrix(m)
-inv_mat = cacheSolve(matobject)
-matobject$get()
-inv_mat
+#test
+matr = matrix(c(2.0, 4.0, 3.0, 5.0, 6.0, 4.0, 2.0, 3.0, 8.0), nrow = 3, ncol= 3)
+matobject = makeCacheMatrix(matr)
+
+#calculate inverse for the first time
+cacheSolve(matobject)
+
+#getting cached data for the second time
+cacheSolve(matobject)
+
+#verification of the results
+solve(matr)
